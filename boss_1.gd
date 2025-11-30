@@ -16,6 +16,9 @@ var my_random_number : int
 @onready var Scream3 : AudioStreamPlayer2D = $Scream3
 @onready var Spawn : AudioStreamPlayer2D = $Spawn
 @onready var Jackpot : AudioStreamPlayer2D = $Jackpot
+@onready var Stheme : AudioStreamPlayer2D = $Theme
+@onready var ThemeBazar : AudioStreamPlayer2D = $ThemeBazar
+
 
 @export var enemyCountToSpawn : int = 1
 
@@ -28,13 +31,19 @@ var rng2 = RandomNumberGenerator.new()
 func _ready() -> void:
 	hp = hpMax
 	anim.play("Idle")
+	ThemeBazar.play()
 	
 
 func _physics_process(delta: float) -> void:
-	
+	if not ThemeBazar.playing:
+		ThemeBazar.play()
 	if is_instance_valid(Notify.player):
 		player = Notify.player
 	if player != null:
+		if ThemeBazar.playing:
+			ThemeBazar.stop()
+		if not Stheme.playing:
+			Stheme.play()
 		disToPlayer = global_position.distance_to(player.global_position)
 		vecToPlayer =(player.global_position-global_position).normalized()
 	if disToPlayer <= 600 and my_random_number == 1:
@@ -63,6 +72,7 @@ func _damage(damage) -> void:
 		
 func _death() -> void:
 	queue_free()
+	Stheme.stop()
 	
 func _updateState() -> void:
 	timeToAttack = timeToAttackCur
